@@ -1,0 +1,56 @@
+baseURL = "https://example.org/"
+languageCode = "en-us"
+title = "Nayeem Hasan"
+theme = "ezhil"
+
+copyright = "Copyright © Nayeem Hasan"
+
+# syntax highlighting
+pygmentsstyle = "github-dark"
+
+[params]
+    subtitle = "Exploring the world of softwares"
+
+    mode = "dark"
+
+# menu items
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "Blog"
+url = "/blog"
+weight = 2
+
+[[menu.main]]
+name = "Projects"
+url = "/projects/"
+weight = 3
+
+[[menu.main]]
+name = "About"
+url = "/about/"
+weight = 4
+
+[[menu.main]]
+name = "Tags"
+url = "/tags"
+weight = 5
+
+# social
+
+[[params.social]]
+name = "Github"
+icon = "github"
+url = "https://github.com/nhAnik"
+
+[[params.social]]
+name = "LinkedIn"
+icon = "linkedin"
+url = "https://www.linkedin.com/in/nayeem-hasan-a1abb5153/"
+
+[taxonomies]
+   tag = "tags"

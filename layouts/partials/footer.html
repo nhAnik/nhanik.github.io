@@ -1,0 +1,16 @@
+<div class="footer wrapper">
+	<nav class="nav">
+		<div>{{ with .Site.Copyright }} {{ . }} {{ end }} | Licensed under 
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/"
+                target="_blank" rel="license noopener noreferrer"
+                style="display:inline-block;">CC BY-SA 4.0</a>
+        </div>
+	</nav>
+</div>
+
+{{ if not .Site.IsServer }}
+{{ template "_internal/google_analytics_async.html" . }}
+{{ end }}
+{{- with .Site.Params.Social -}}
+<script>feather.replace()</script>
+{{- end -}}
