@@ -2,6 +2,7 @@
 title = 'Go: Build your own linter'
 date = 2024-01-17T19:23:26+06:00
 tags = ["go", "linter"]
+enableComments = true
 +++
 
 Go provides rich support for lexical analysis, parsing and type checking of a go package. Using
