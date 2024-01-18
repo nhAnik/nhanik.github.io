@@ -13,6 +13,8 @@ pygmentsstyle = "github-dark"
 
     mode = "dark"
 
+    favicon = "icons/favicon.ico"
+
 # menu items
 
 [[menu.main]]
