@@ -16,7 +16,7 @@ or static analysis without manual parsing or loading packages. The [analysis](ht
 package provides a nice API to write the business logic of our linter or static analysis and test them
 effectively.
 
-### A simple linter
+### A simple linter {.section-header}
 
 Let's build a simple linter that will detect a violation of the naming convention in go.
 As per [documentation](https://go.dev/doc/effective_go#mixed-caps),
@@ -97,7 +97,7 @@ So, to summarize we will check
 - all the identifiers in a _ValueSpec_ node (represented by _Names_ field)
 - all the left hand side identifiers in a _AssignStmt_ node (represented by _Lhs_ field where the type of the field is _*ast.Ident_)
 
-### The code
+### The code {.section-header}
 
 First, we will declare a variable of type _Analyzer_. According to the documentation of [Analyzer](https://pkg.go.dev/golang.org/x/tools/go/analysis#Analyzer),
 
@@ -171,7 +171,7 @@ object to get the result of the prerequisite analyzer.
 - (6) For each _AssignStmt_, the analyzer checks if it is a short variable declaration and checks whether any of the assigned identifiers has snake case naming.
 - (7) Here, _s != "_"_ is added to skip warning for blank identifier like _x, _ := f()_.
 
-### Adding more functionality
+### Adding more functionality {.section-header}
 
 Now, let's make some improvements to prevent some unwanted warnings. First, we want to prevent the analyzer from running on an auto-generated
 file as the auto-generated file often contains variables with snake case and we do not want to modify it.
@@ -279,7 +279,7 @@ if !*analyzeGenerated && isGeneratedFile(stack[0]) { // (3)
 }
 ```
 
-## Running the analyzer
+### Running the analyzer {.section-header}
 
 Here is all the code for the analyzer:
 ```go
@@ -405,7 +405,7 @@ for each package. We can also run the analyzer on a single package like _varname
 
 Also, if we have multiple analyzers, we can invoke all of them using [multichecker.Main](https://pkg.go.dev/golang.org/x/tools/go/analysis/multichecker#Main).
 
-### Running as a CLI
+### Running as a CLI {.section-header}
 
 Create a file with the contents given below:
 ```go
@@ -450,7 +450,7 @@ Now, the warning will show up.
 /home/nayeem/my-codes/pg/optype_string.go:19:5: avoid snake case naming convention
 ```
 
-### Summary
+### Summary {.section-header}
 With the [analysis](https://pkg.go.dev/golang.org/x/tools/go/analysis) package, we have created a simple analyzer.
 It is also possible to do the same thing without the _analysis_ package.
 
