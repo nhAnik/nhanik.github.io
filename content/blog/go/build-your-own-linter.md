@@ -3,26 +3,28 @@ title = 'Go: Build your own linter'
 date = 2024-01-17T19:23:26+06:00
 tags = ["go", "linter"]
 enableComments = true
+
+description = "Go provides rich support for lexical analysis, parsing and type checking of a go package. Using these tools, we can create our own linter to detect any issue or perform some refactoring."
 +++
 
 Go provides rich support for lexical analysis, parsing and type checking of a go package. Using
 these tools, we can create our own linter to detect any issue or perform some refactoring.
 
-To make matter easier, go [tools](https://pkg.go.dev/golang.org/x/tools) module provides
+To make matters easier, go [tools](https://pkg.go.dev/golang.org/x/tools) module provides
 [analysis](https://pkg.go.dev/golang.org/x/tools/go/analysis) package with which we can create linter
 or static analysis without manual parsing or loading packages. The [analysis](https://pkg.go.dev/golang.org/x/tools/go/analysis)
-package provides a nice API to write the business logic of our linter or static analysis and testing them
+package provides a nice API to write the business logic of our linter or static analysis and test them
 effectively.
 
 ### A simple linter
 
-Let's build a simple linter which will detect a violation of naming convention in go.
+Let's build a simple linter that will detect a violation of the naming convention in go.
 As per [documentation](https://go.dev/doc/effective_go#mixed-caps),
 _The convention in Go is to use `MixedCaps` or `mixedCaps` rather than underscores to write multiword names._
 So, this linter will catch usage of underscore in variable naming like _mixed_caps_.
 
 Before diving into the code, we need to find out for which cases we will issue the warning.
-We need to issue the warning where a variable is being declared. Now, variable declaration may look like this:
+We need to issue the warning where a variable is being declared. Now, a variable declaration may look like this:
 
 ```go
 func _() {
@@ -56,8 +58,8 @@ GenDecl struct {
 ```
 A _DeclStmt_ represents a declaration and the field _Decl_ is of _Decl_ type which is an interface.
 It is implemented by _*GenDecl_ and the _GenDecl_ type contains _Spec_ which is also an interface.
-The _Decl_ interface is also implemented by other type like _FuncDecl_ (represents a function declaration)
-which is not relevant for this case.
+The _Decl_ interface is also implemented by other types like _FuncDecl_ (represents a function declaration)
+which is not relevant to this case.
 
 ```go
 // A ValueSpec node represents a constant or variable declaration
@@ -72,9 +74,9 @@ ValueSpec struct {
 ```
 The interface _Spec_ is implemented by _*ValueSpec_. A _ValueSpec_ node represents a const or variable declaration and
 the _Names_ field contains all the identifiers in a declaration which is of _*ast.Ident_ type.
-So, for our linter it is enough to check the identifiers in a _ValueSpec_ node.
+So, for this linter, it is enough to check the identifiers in a _ValueSpec_ node.
 
-Now, lets check what is an _AssignStmt_.
+Now, let's check what is an _AssignStmt_.
 ```go
 // An AssignStmt node represents an assignment or
 // a short variable declaration.
@@ -88,7 +90,7 @@ type AssignStmt struct {
 An _AssignStmt_ represents statement like _x = 1_ or _x := 1_.
 For this linter, we are interested in _x := 1_ and check _AssignStmt_ with _Tok_ having value of _token.DEFINE_ i.e. _:=_.
 Here, _DEFINE_ is a constant of type [Token](https://pkg.go.dev/go/token#Token) declared inside [go/token](https://pkg.go.dev/go/token) package.
-Also, the _Lhs_ fields is a slice of _Expr_ which is an interface and it is implemented by many expression type.
+Also, the _Lhs_ fields is a slice of _Expr_ which is an interface and it is implemented by many expression types.
 We are only interested where the _Expr_ is an identifier.
 
 So, to summarize we will check
@@ -97,11 +99,11 @@ So, to summarize we will check
 
 ### The code
 
-First, we will declare an variable of type _Analyzer_. According to documentation of [Analyzer](https://pkg.go.dev/golang.org/x/tools/go/analysis#Analyzer),
+First, we will declare a variable of type _Analyzer_. According to the documentation of [Analyzer](https://pkg.go.dev/golang.org/x/tools/go/analysis#Analyzer),
 
 _An Analyzer statically describes an analysis function: its name, documentation, flags, relationship to other analyzers, and of course, its logic._
 
-So, the _Analyzer_ contains some metadata of the linter and has a function which will contain the business logic.
+So, the _Analyzer_ contains some metadata of the linter and has a function that will contain the business logic.
 
 ```go
 var Analyzer = &analysis.Analyzer{
@@ -119,7 +121,7 @@ func run(pass *analysis.Pass) (interface{}, error) { // (5)
 - (2) A helpful doc should be added. This must not be empty.
 - (3) _run_ function contains the actual logic of the linter. The signature of
 _Run_ field is _func(*Pass) (interface{}, error)_. So, _run_ takes an _*analysis.Pass_ as an argument and returns a result on success. If the linter returns a result the type of the result should be assigned to _ResultType_ field. So, what is the use of this result? If any other analyzer depends on this analyzer, it can use the result produced by this analyzer.
-- (4) The list of analyzers which must run successfully before the linter. In this case it is _inspect.Analyzer_. Now why do we require it as a dependency?
+- (4) The list of analyzers that must run successfully before the linter. In this case, it is _inspect.Analyzer_. Now why do we require it as a dependency?
 Because our analyzer needs to check the ASTs and the _inspect.Analyzer_ returns an [Inspector](https://pkg.go.dev/golang.org/x/tools/go/ast/inspector#Inspector). With the _Inspector_ we can do a preorder traversal on the ASTs and apply the logic of our analyzer.
 - (5) _run_ will contain the business logic of the analyzer.
 
@@ -159,20 +161,20 @@ func isSnakeCase(s string) bool {
 	return s != "_" && strings.ContainsRune(s, '_') // (7)
 }
 ```
-- (1) _pass_ which is of type [*analysis.Pass](https://pkg.go.dev/golang.org/x/tools/go/analysis#Pass) contains all the relevant information necessary for the analyzer like all the syntax trees of a package, type information, result of the prerequisite analyzers and so on. It also
-provides some method like _ReportRangef_ to generate warning on a node. For this linter, we need the _ResultOf_ field of the _pass_
+- (1) _pass_ which is of type [*analysis.Pass](https://pkg.go.dev/golang.org/x/tools/go/analysis#Pass) contains all the relevant information necessary for the analyzer like all the syntax trees of a package, type information, results of the prerequisite analyzers and so on. It also
+provides some methods like _ReportRangef_ to generate a warning on a node. For this linter, we need the _ResultOf_ field of the _pass_
 object to get the result of the prerequisite analyzer.
-- (2) _pass.ResultOf_ returns the result from the required analyzer _inspect.Analyzer_ which takes all the syntax trees as argument and returns an _*inspector.Inspector_ object. The _*inspector.Inspector_ object provides some helpful method to traverse the ASTs like _(*inspector.Inspector).Preorder_.
+- (2) _pass.ResultOf_ returns the result from the required analyzer _inspect.Analyzer_ which takes all the syntax trees as argument and returns an _*inspector.Inspector_ object. The _*inspector.Inspector_ object provides some helpful methods to traverse the ASTs like _(*inspector.Inspector).Preorder_.
 - (3) We decided to check the _ValueSpec_ and _AssignStmt_ node for this analyzer.
-- (4) _Preorder_ runs preorder traversal for each AST and for each node of type mentioned in _nodeFilter_ invokes the provided function.
-- (5) For each _ValueSpec_, the analyzer checks whether any of the assigned identifier has snake case naming.
-- (6) For each _AssignStmt_, the analyzer checks if it is a short variable declaration and checks whether any of the assigned identifier has snake case naming.
+- (4) _Preorder_ runs preorder traversal for each AST and for each node of the type mentioned in _nodeFilter_ invokes the provided function.
+- (5) For each _ValueSpec_, the analyzer checks whether any of the assigned identifiers has snake case naming.
+- (6) For each _AssignStmt_, the analyzer checks if it is a short variable declaration and checks whether any of the assigned identifiers has snake case naming.
 - (7) Here, _s != "_"_ is added to skip warning for blank identifier like _x, _ := f()_.
 
 ### Adding more functionality
 
-Now, lets do some improvement to prevent some unwanted warning. First, we want to prevent the analyzer to run on an auto generated
-file as the auto generated file often contain variables with snake case and we do not want to modify it.
+Now, let's make some improvements to prevent some unwanted warnings. First, we want to prevent the analyzer from running on an auto-generated
+file as the auto-generated file often contains variables with snake case and we do not want to modify it.
 
 A generated file contains comment like this
 ```go
@@ -190,7 +192,7 @@ type File struct {
 }
 ```
 So, we need to check the _Comments_ field in the _*ast.File_. But how can we get the _*ast.File_?
-If we check the the function in the _Preorder_ method, it just provides an _ast.Node_ and there is no parent or ancestor
+If we check the function in the _Preorder_ method, it just provides an _ast.Node_ and there is no parent or ancestor
 information associated with it to find the root element which is the _*ast.File_ node.
 ```go
 anInspector.Preorder(nodeFilter, func(n ast.Node) {
@@ -204,7 +206,7 @@ anInspector.WithStack(nodeFilter, func(n ast.Node, push bool, stack []ast.Node) 
 	// ...
 })
 ```
-Lets modify the analyzer with the _WithStack_ method.
+let's modify the analyzer with the _WithStack_ method.
 ```go
 func run(pass *analysis.Pass) (interface{}, error) {
 	
@@ -242,8 +244,8 @@ func isGeneratedFile(node ast.Node) bool {
 	return false
 }
 ```
-- (1) For each node, check if the root element i.e. _*ast.File_ is an generated file.
-- (2) A regex to match comment in a generated file.
+- (1) For each node, check if the root element i.e. _*ast.File_ is a generated file.
+- (2) A regex to match a special comment in a generated file.
 - (3) Check all the comments before the _package_ keyword as the generated comments reside before _package_ keyword.
 - (4) Check if the comment text is matched with the regex
 
@@ -370,8 +372,8 @@ func isSnakeCase(s string) bool {
 	return s != "_" && strings.ContainsRune(s, '_')
 }
 ```
-Save this code in a file in the root directory of the repository. Now, lets create the _main.go_ file inside _cmd/varname_
-directory and paste
+Save this code in a file in the root directory of the repository. Now, let's create the _main.go_ file inside _cmd/varname_
+directory and paste:
 ```go
 package main
 
@@ -393,12 +395,12 @@ varname ./...
 inside a go project to invoke the linter.
 
 So, what is _singlechecker.Main_ doing here?
-- It does some validation on the _Analyzer_ like checking if the _Name_ field is a valid identifier.
+- It performs some validation on the _Analyzer_ like checking if the _Name_ field is a valid identifier.
 - It registers all the flags defined for the analyzer. Besides the defined flags, it also registers some default flags
 for the analyzer. Try running _varname -h_.
-- It loads all the packages (which are passed as an argument). During package loading all the syntax trees are created and
-type information are calculated and for each package, it creates the _pass_ object (remember _func run(pass *analysis.Pass)_).
-So, when we run _varname ./..._ inside a go project, it loads all the packages of the project and run the _varname_ analyzer
+- It loads all the packages (which are passed as an argument). During package loading, all the syntax trees are created and
+type information is calculated and for each package, it creates the _pass_ object (remember _func run(pass *analysis.Pass)_).
+So, when we run _varname ./..._ inside a go project, it loads all the packages of the project and runs the _varname_ analyzer
 for each package. We can also run the analyzer on a single package like _varname fmt_ to run the analyzer on the _fmt_ package.
 
 Also, if we have multiple analyzers, we can invoke all of them using [multichecker.Main](https://pkg.go.dev/golang.org/x/tools/go/analysis/multichecker#Main).
@@ -420,7 +422,7 @@ func _() int {
 	return sum_of_value
 }
 ```
-Now, run _varname ./..._ and check the output
+Now, run _varname ./..._ and check the output.
 ```text
 /home/nayeem/my-codes/pg/foo.go:3:5: avoid snake case naming convention
 /home/nayeem/my-codes/pg/foo.go:6:2: avoid snake case naming convention

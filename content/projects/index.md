@@ -8,7 +8,7 @@ type = "page"
 Backend API server for an URL shortener.
 
 ### [poll-maker](https://github.com/nhAnik/poll-maker)
-Backend app for creating poll and casting vote in different choices.
+Backend app for creating polls and casting votes in different choices.
 
 ### [startspring](https://github.com/nhAnik/startspring)
 Command line application to create a new Spring Boot project.

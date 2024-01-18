@@ -6,7 +6,7 @@ type = "page"
 
 I am Nayeem Hasan, a Software Engineer from Dhaka, Bangladesh.
 
-Currently, I am working at [OpenRefactory](https://www.openrefactory.com/) where I am involved in development of static analysis tools which can find hard to detect bugs in Java, Python and Go projects.
+Currently, I am working at [OpenRefactory](https://www.openrefactory.com/) where I am involved in the development of static analysis tools that can find hard to detect bugs in Java, Python and Go projects.
 
 Before that, I was employed in Samsung R&D Institute Bangladesh where I worked on web engines in wearable devices and also contributed to the development of Samsung Internet browser. 
 
