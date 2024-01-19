@@ -1,0 +1,39 @@
+.highlight {
+	position: relative;
+}
+
+.copy-code-button {
+    /* top right in codeblock */
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 14px;
+    letter-spacing: 0.5px;
+
+    width: 65px;
+    color: #232326;
+    border: 1px solid #232326;
+    border-radius: 0 10px 0 4px;
+
+    white-space: nowrap;
+    padding: 4px 4px 5px 4px;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.copy-code-button:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.copy-code-button:focus {
+    outline: 0;
+    opacity: 0.6;
+}
+
+.copy-code-button:active {
+    opacity: 0.6;
+}

@@ -17,6 +17,8 @@ pygmentsstyle = "github-dark"
 
     customDarkCSS = "css/gray.css"
 
+    customCSS = "css/button.css"
+
 # menu items
 
 [[menu.main]]
@@ -58,3 +60,4 @@ url = "https://www.linkedin.com/in/nayeem-hasan-a1abb5153/"
 
 [taxonomies]
    tag = "tags"
+
