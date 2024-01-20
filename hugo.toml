@@ -8,6 +8,8 @@ copyright = "Copyright © Nayeem Hasan"
 # syntax highlighting
 pygmentsstyle = "github-dark"
 
+googleAnalytics = "G-ZFCZ8X635S"
+
 [params]
     subtitle = "Exploring the world of softwares"
 
@@ -57,6 +59,11 @@ url = "https://github.com/nhAnik"
 name = "LinkedIn"
 icon = "linkedin"
 url = "https://www.linkedin.com/in/nayeem-hasan-a1abb5153/"
+
+[privacy.googleAnalytics]
+anonymizeIP = true
+respectDoNotTrack = true
+useSessionStorage = true
 
 [taxonomies]
    tag = "tags"
