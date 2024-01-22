@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+{{ partial "header.html" . }}
+
+<body>
+    <div class="container wrapper">
+		{{ partial "head.html" . }}
+
+		<h2>The page you're looking for doesn't exist</h2>
+        <a href="{{ "" | relURL }}">Go Home</a>
+	</div>
+	{{ partial "footer.html" . }}
+</body>
+</html>
